@@ -28,7 +28,7 @@ func main() {
 	employeeService := service.NewEmployeeService(employeeRepository)
 	employeeController := controller.NewEmployeeController(employeeService)
 	routes.RegisterRoute(app, employeeController)
-	err := app.Listen(":8080")
+	err := app.Listen("0.0.0.0:8080")
 	if err != nil {
 		log.Fatalln(fmt.Sprintf("error starting the server %s", err.Error()))
 	}
