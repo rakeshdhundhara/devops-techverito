@@ -37,17 +37,32 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                   sh '''
-                    eval $(minikube -p minikube docker-env)
-                    kubectl apply -f k8s/db-secret.yaml
-                    kubectl apply -f k8s/postgres-deployment.yaml
-                    kubectl apply -f k8s/backend-deployment.yaml
-                    kubectl apply -f k8s/frontend-deployment.yaml
-                    '''
+        // stage('Deploy to Kubernetes') {
+        //     steps {
+        //           sh '''
+        //             eval $(minikube -p minikube docker-env)
+        //             kubectl apply -f k8s/db-secret.yaml
+        //             kubectl apply -f k8s/postgres-deployment.yaml
+        //             kubectl apply -f k8s/backend-deployment.yaml
+        //             kubectl apply -f k8s/frontend-deployment.yaml
+        //             '''
                 
-            }
+        //     }
+        // }
+        stage('Deploy Frontend Container') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'dockercredentialA', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+            sh """
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            docker pull rakeshbarwala/devops-frontend:latest
+
+            docker stop frontend-test || true
+            docker rm frontend-test || true
+            docker run -d -p 3000:3000 --name frontend-test rakeshbarwala/devops-frontend:latest
+            """
         }
+    }
+}
+
     }
 }
