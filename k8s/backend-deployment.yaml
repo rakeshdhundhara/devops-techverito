@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: dhundhara/backend-app:latest
+          image: rakeshbarwala/devops-backend:latest
           env:
             - name: DB_HOST
               value: postgres
