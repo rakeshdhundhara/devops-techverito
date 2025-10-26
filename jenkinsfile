@@ -16,13 +16,14 @@ pipeline {
 
         stage('Build Backend Docker Image') {
             steps {
-                sh "docker build -t $REGISTRY/$BACKEND_IMAGE:latest ./backend"
+                // --no-cache ensures Docker rebuilds every time
+                sh "docker build --no-cache -t $REGISTRY/$BACKEND_IMAGE:latest ./backend"
             }
         }
 
         stage('Build Frontend Docker Image') {
             steps {
-                sh "docker build -t $REGISTRY/$FRONTEND_IMAGE:latest ./frontend"
+                sh "docker build --no-cache -t $REGISTRY/$FRONTEND_IMAGE:latest ./frontend"
             }
         }
 
@@ -35,17 +36,18 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Minikube') {
-    steps {
-        sh '''
-        eval $(minikube -p minikube docker-env)
-        kubectl apply -f k8s/db-secret.yaml
-        kubectl apply -f k8s/postgres-deployment.yaml
-        kubectl apply -f k8s/backend-deployment.yaml
-        kubectl apply -f k8s/frontend-deployment.yaml
-        '''
-    }
-}
 
+        stage('Deploy to Kubernetes') {
+            steps {
+                   sh '''
+                    eval $(minikube -p minikube docker-env)
+                    kubectl apply -f k8s/db-secret.yaml
+                    kubectl apply -f k8s/postgres-deployment.yaml
+                    kubectl apply -f k8s/backend-deployment.yaml
+                    kubectl apply -f k8s/frontend-deployment.yaml
+                    '''
+                
+            }
+        }
     }
 }
