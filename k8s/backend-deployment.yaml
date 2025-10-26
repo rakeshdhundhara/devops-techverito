@@ -15,6 +15,7 @@ spec:
       containers:
         - name: backend
           image: rakeshbarwala/devops-backend:latest
+          imagePullPolicy: Always
           env:
             - name: DB_HOST
               value: postgres
