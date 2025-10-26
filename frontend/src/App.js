@@ -57,7 +57,7 @@ function App() {
                 padding: "1rem calc(100vh - 50rem)",
             }}>
                 <TextField id="standard-basic" label="Name" variant="standard" onChange={handleSetName}/>
-                <TextField id="standard-number" label="Id"
+                <TextField id="standard-number" label="Idd"
                     type="number"
                     InputLabelProps={{
                         shrink: true,
